@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
     private BufferedImage backgroundImage;
-    private final String finalPath = "C:\\Users\\rykov\\IdeaProjects\\tetris\\src\\background.jpg";
+    private final String finalPath = "background.jpg";
 
     public ImagePanel() {
         try {
