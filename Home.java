@@ -1,3 +1,6 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -5,13 +8,16 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class Home extends JPanel {
     private final CardLayout cardLayout;
     private final Font font;
     private final JPanel panelContainer;
     public Game game;
+    public Clip homeScreeClip;
     public final DataBase dataBase;
+    public Scores scores;
     public JLabel score;
     public int biggest;
     public Home(CardLayout cardLayout, Font font, JPanel panelContainer) {
@@ -22,10 +28,19 @@ public class Home extends JPanel {
         if (!dataBase.getAll().isEmpty()) {
             biggest = Integer.parseInt(dataBase.getAll().get(0)[1]);
         }
+        try {
+            URL url = new URL("https://dreamity.ru/internal/main_menu.wav");
+            homeScreeClip = AudioSystem.getClip();
+            AudioInputStream ais = AudioSystem.getAudioInputStream( url );
+            homeScreeClip.open(ais);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         add(homeScreen());
     }
 
     public JPanel homeScreen() {
+        homeScreeClip.loop(Clip.LOOP_CONTINUOUSLY);
         ImagePanel mainPanel = generateMainPanel();
         JLabel mainTitle = generateTetrisTitle();
         JButton startNewGameButton = generateNewGameButton();
@@ -34,8 +49,8 @@ public class Home extends JPanel {
         updateScore(biggest);
         mainPanel.add(mainTitle);
         mainPanel.add(startNewGameButton);
-        mainPanel.add(generateScoresButton());
         mainPanel.add(exitButton);
+        mainPanel.add(generateScoresButton());
         mainPanel.add(score);
         mainPanel.setName("Home");
         return mainPanel;
@@ -82,8 +97,11 @@ public class Home extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (game.getScore() != 0) {
                     dataBase.saveData(game.getScore());
+                    scores.repaint();
                 }
+                homeScreeClip.stop();
                 game.restartGame();
+
                 cardLayout.show(panelContainer, "Game");
             }
         });
@@ -105,6 +123,7 @@ public class Home extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 game.play();
+                homeScreeClip.stop();
                 cardLayout.show(panelContainer, "Game");
             }
         });

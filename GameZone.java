@@ -1,13 +1,13 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.Area;
-import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.*;
 
 public class GameZone extends JPanel implements GameData {
@@ -111,6 +111,15 @@ public class GameZone extends JPanel implements GameData {
     }
 
     public void rotate() {
+        try {
+            URL urlMove = new URL("https://dreamity.ru/internal/rotate.wav");
+            Clip moveClip = AudioSystem.getClip();
+            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+            moveClip.open(aisMove);
+            moveClip.loop(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         if (this.fragment[lastAdded] != null) {
             int[] xPoints = fragment[lastAdded].xpoints;
             int[] yPoints = fragment[lastAdded].ypoints;
@@ -263,6 +272,15 @@ public class GameZone extends JPanel implements GameData {
 
 
     public void moveLeft() {
+        try {
+            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
+            Clip moveClip = AudioSystem.getClip();
+            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+            moveClip.open(aisMove);
+            moveClip.loop(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[0] >= 20) {
             boolean can = true;
@@ -278,6 +296,15 @@ public class GameZone extends JPanel implements GameData {
     }
 
     public void moveRight() {
+        try {
+            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
+            Clip moveClip = AudioSystem.getClip();
+            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+            moveClip.open(aisMove);
+            moveClip.loop(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[1] <= 370) {
             int[] newCoordinatesX = new int[this.fragment[lastAdded].npoints];
@@ -406,11 +433,11 @@ public class GameZone extends JPanel implements GameData {
             this.timer.start();
             repaint();
         } else {
-            if (lastAdded > 0) {
-                System.out.println(ifUnpaintedCells(0, 380, 380, 20, fragment));
-                System.out.println(ifUnpaintedCells(0, 400, 380, 20, fragment));
-                System.out.println(ifUnpaintedCells(0, 420, 380, 20, fragment));
-            }
+//            if (lastAdded > 0) {
+//                System.out.println(ifUnpaintedCells(0, 380, 380, 20, fragment));
+//                System.out.println(ifUnpaintedCells(0, 400, 380, 20, fragment));
+//                System.out.println(ifUnpaintedCells(0, 420, 380, 20, fragment));
+//            }
             this.counter += 10;
             this.availToMove = false;
             this.lastRotated = false;

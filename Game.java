@@ -1,13 +1,14 @@
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class Game extends JPanel {
     private final JLabel count = generateScoreLabel();
     public int lastCount = 0;
     private GameZone gameZone = generateGameZone();
     private int ct = 0;
+    public Scores scores;
     private Timer tm;
     public Home home;
     public final CardLayout cardLayout;
@@ -25,6 +26,26 @@ public class Game extends JPanel {
     }
     public int getScore() {
         return gameZone.getCount();
+    }
+    public void moveRight() {
+        try {
+            gameZone.moveRight();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void moveLeft() {
+        try {
+            gameZone.moveLeft();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void moveDown() {
+        gameZone.moveDown();
+    }
+    public void rotate() {
+        gameZone.rotate();
     }
     public void pause() {
         gameZone.pause();
@@ -118,6 +139,8 @@ public class Game extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pause();
+                scores.repaint();
+                home.homeScreeClip.loop(Clip.LOOP_CONTINUOUSLY);
                 cardLayout.show(panelContainer, "Home");
             }
         });

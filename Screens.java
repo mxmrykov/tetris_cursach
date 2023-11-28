@@ -1,5 +1,11 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.net.URL;
 
 public class Screens extends JFrame {
 
@@ -15,9 +21,9 @@ public class Screens extends JFrame {
         frame = new JFrame();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        setPreferredSize(new Dimension(400, 545));
-        frame.setPreferredSize(new Dimension(400, 550));
-        setBounds((int) width / 2 - 200, (int) height / 2 - 260, 400, 550);
+        setPreferredSize(new Dimension(400, 560));
+        frame.setPreferredSize(new Dimension(400, 560));
+        setBounds((int) width / 2 - 200, (int) height / 2 - 280, 400, 560);
         frame.setLayout(new BorderLayout());
         panelContainer = new JPanel();
         cardLayout = new CardLayout();
@@ -34,10 +40,29 @@ public class Screens extends JFrame {
 
         home.game = game;
         game.home = home;
+        home.scores = scores;
+        game.scores = scores;
 
         panelContainer.add(home, "Home");
         panelContainer.add(scores, "Score");
         panelContainer.add(game, "Game");
         add(panelContainer);
+
+        setFocusable(true);
+        requestFocusInWindow();
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    game.moveLeft();
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    game.moveRight();
+                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    game.rotate();
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    game.moveDown();
+                }
+            }
+        });
     }
 }
