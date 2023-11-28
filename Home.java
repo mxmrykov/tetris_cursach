@@ -11,11 +11,17 @@ public class Home extends JPanel {
     private final Font font;
     private final JPanel panelContainer;
     public Game game;
+    public final DataBase dataBase;
     public JLabel score;
+    public int biggest;
     public Home(CardLayout cardLayout, Font font, JPanel panelContainer) {
         this.cardLayout = cardLayout;
         this.font = font;
         this.panelContainer = panelContainer;
+        dataBase = new DataBase();
+        if (!dataBase.getAll().isEmpty()) {
+            biggest = Integer.parseInt(dataBase.getAll().get(0)[1]);
+        }
         add(homeScreen());
     }
 
@@ -25,8 +31,10 @@ public class Home extends JPanel {
         JButton startNewGameButton = generateNewGameButton();
         JButton exitButton = generateExitButton();
         score = generateScoreTitle();
+        updateScore(biggest);
         mainPanel.add(mainTitle);
         mainPanel.add(startNewGameButton);
+        mainPanel.add(generateScoresButton());
         mainPanel.add(exitButton);
         mainPanel.add(score);
         mainPanel.setName("Home");
@@ -39,18 +47,18 @@ public class Home extends JPanel {
 
     private ImagePanel generateMainPanel() {
         ImagePanel mainPanel = new ImagePanel();
-        mainPanel.setPreferredSize(new Dimension(400, 520));
+        mainPanel.setPreferredSize(new Dimension(400, 550));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         return mainPanel;
     }
 
     private JLabel generateTetrisTitle() {
         JLabel mainTitle = new JLabel("Tetris");
-        mainTitle.setBounds(50, 50, 150, 50);
+        mainTitle.setBounds(0, 0, 150, 50);
         mainTitle.setFont(font.deriveFont(Font.BOLD, 48f));
         mainTitle.setForeground(Color.WHITE);
         Border mainTitleborder = mainTitle.getBorder();
-        Border marginTopFifty = new EmptyBorder(50, 0, 50, 0);
+        Border marginTopFifty = new EmptyBorder(35, 0, 50, 0);
         mainTitle.setBorder(new CompoundBorder(mainTitleborder, marginTopFifty));
         mainTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         return mainTitle;
@@ -72,6 +80,9 @@ public class Home extends JPanel {
         startNewGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (game.getScore() != 0) {
+                    dataBase.saveData(game.getScore());
+                }
                 game.restartGame();
                 cardLayout.show(panelContainer, "Game");
             }
@@ -100,13 +111,34 @@ public class Home extends JPanel {
         return exitButton;
     }
 
+    private JButton generateScoresButton() {
+        JButton scoresButton = new JButton("Scores");
+        scoresButton.setBounds(50, 220, 150, 25);
+        scoresButton.setFont(font.deriveFont(Font.PLAIN, 32f));
+        scoresButton.setForeground(Color.WHITE);
+        scoresButton.setBorder(new CompoundBorder(scoresButton.getBorder(), new EmptyBorder(12, 0, 12, 0)));
+        scoresButton.setOpaque(false);
+        scoresButton.setContentAreaFilled(false);
+        scoresButton.setFocusPainted(false);
+        scoresButton.setBorderPainted(false);
+        scoresButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        scoresButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.play();
+                cardLayout.show(panelContainer, "Score");
+            }
+        });
+        return scoresButton;
+    }
+
 
     private JLabel generateScoreTitle() {
         JLabel scoreTitle = new JLabel("Last record: " + 0);
         scoreTitle.setFont(font.deriveFont(Font.PLAIN, 32f));
         scoreTitle.setForeground(Color.white);
         Border scoreTitleborder = scoreTitle.getBorder();
-        scoreTitle.setBorder(new CompoundBorder(scoreTitleborder, new EmptyBorder(120, 0, 0, 0)));
+        scoreTitle.setBorder(new CompoundBorder(scoreTitleborder, new EmptyBorder(100, 0, 0, 0)));
         scoreTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         return scoreTitle;
     }

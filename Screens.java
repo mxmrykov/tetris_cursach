@@ -13,8 +13,9 @@ public class Screens extends JFrame {
 
     public Screens() {
         frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        setPreferredSize(new Dimension(400, 545));
         frame.setPreferredSize(new Dimension(400, 550));
         setBounds((int) width / 2 - 200, (int) height / 2 - 260, 400, 550);
         frame.setLayout(new BorderLayout());
@@ -29,11 +30,13 @@ public class Screens extends JFrame {
 
         Game game = new Game(cardLayout, font, panelContainer);
         Home home = new Home(cardLayout, font, panelContainer);
+        Scores scores = new Scores(cardLayout, font, panelContainer);
 
         home.game = game;
         game.home = home;
 
         panelContainer.add(home, "Home");
+        panelContainer.add(scores, "Score");
         panelContainer.add(game, "Game");
         add(panelContainer);
     }

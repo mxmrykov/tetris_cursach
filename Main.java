@@ -6,6 +6,7 @@ public class Main {
             public void run() {
                 Screens screens = new Screens();
                 screens.setVisible(true);
+                screens.pack();
             }
         });
     }

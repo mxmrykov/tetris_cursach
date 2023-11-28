@@ -23,7 +23,9 @@ public class Game extends JPanel {
     public void restartGame() {
         gameZone.restart();
     }
-
+    public int getScore() {
+        return gameZone.getCount();
+    }
     public void pause() {
         gameZone.pause();
     }
@@ -54,6 +56,9 @@ public class Game extends JPanel {
                     lastCount = gameZone.getCount();
                     animationForCount();
                     count.setText("Score: " + gameZone.getCount());
+                    if (gameZone.gameOver) {
+                        home.dataBase.saveData(gameZone.getCount());
+                    }
                 }
             }
         });

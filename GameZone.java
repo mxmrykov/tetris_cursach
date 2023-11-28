@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Area;
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class GameZone extends JPanel implements GameData {
@@ -21,6 +22,7 @@ public class GameZone extends JPanel implements GameData {
     private final int[] sizeY = new int[2];
     private final int[] sizeX = new int[2];
     private int lastFigureIndex = 0;
+    public boolean gameOver = false;
     private final Polygon[] fragment = new Polygon[200];
     private final Color[] fragmentColors = new Color[200];
     protected Timer timer = new Timer(20, new ActionListener() {
@@ -69,7 +71,7 @@ public class GameZone extends JPanel implements GameData {
                 g.setColor(fragmentColors[i]);
             }
             else {
-                System.out.println("Game ended");
+                System.out.println("Game generateLeaders");
                 try {
                     font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LLPixel.ttf"));
                 } catch (Exception e) {
@@ -77,7 +79,8 @@ public class GameZone extends JPanel implements GameData {
                 }
                 g.setColor(Color.white);
                 g.setFont(font.deriveFont(Font.PLAIN, 24f));
-                g.drawString("Game ended", 110, 220);
+                g.drawString("Game over", 110, 220);
+                gameOver = true;
             }
         }
         if (!mustPaint) {
@@ -215,6 +218,26 @@ public class GameZone extends JPanel implements GameData {
                     yPoints[7] -= 20;
                     lastRotated = false;
                 }
+            } else if (GameData.TYPE[InternalIndex].equals("L_REV")) {
+                if (!lastRotated) {
+                    xPoints[0] -= 20;
+                    xPoints[3] += 20;
+                    xPoints[4] += 20;
+                    xPoints[5] -= 20;
+
+                    yPoints[4] -= 20;
+                    yPoints[5] -= 20;
+                    lastRotated = true;
+                } else {
+                    xPoints[0] += 20;
+                    xPoints[3] -= 20;
+                    xPoints[4] -= 20;
+                    xPoints[5] += 20;
+
+                    yPoints[4] += 20;
+                    yPoints[5] += 20;
+                    lastRotated = false;
+                }
             }
             if (!isIntersects(xPoints, yPoints)) {
                 fragment[lastAdded].xpoints = xPoints;
@@ -279,7 +302,7 @@ public class GameZone extends JPanel implements GameData {
             this.availToMove = true;
             this.fragment[this.lastAdded] = new Polygon(this.coordinates[0], this.coordinates[1], this.coordinates[0].length);
             this.fragmentColors[this.lastAdded] = getRandomColor();
-            if (this.lastFigureIndex == 4) {
+            if (this.lastFigureIndex == 5) {
                 this.lastFigureIndex = 0;
             } else {
                 this.lastFigureIndex += 1;
@@ -288,6 +311,25 @@ public class GameZone extends JPanel implements GameData {
             repaint();
         }
     }
+
+    public boolean ifUnpaintedCells(int rectX, int rectY, int rectWidth, int rectHeight, Polygon[] polygons) {
+        for (int i = rectX; i < rectX + rectWidth; i++) {
+            for (int j = rectY; j < rectY + rectHeight; j++) {
+                boolean isFilled = false;
+                for (int in = 0; in < lastAdded; ++in) {
+                    if (fragment[i].contains(i, j)) {
+                        isFilled = true;
+                        break;
+                    }
+                }
+                if (!isFilled) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     public void traceCurrent(Graphics g) {
         g.drawPolygon(this.fragment[lastAdded]);
@@ -360,10 +402,15 @@ public class GameZone extends JPanel implements GameData {
     public void lifeCycle() {
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
 
-        if (this.sizeY[1] <= 417 && isAvailToMoveFragment()) {
+        if (this.sizeY[1] <= 418 && isAvailToMoveFragment()) {
             this.timer.start();
             repaint();
         } else {
+            if (lastAdded > 0) {
+                System.out.println(ifUnpaintedCells(0, 380, 380, 20, fragment));
+                System.out.println(ifUnpaintedCells(0, 400, 380, 20, fragment));
+                System.out.println(ifUnpaintedCells(0, 420, 380, 20, fragment));
+            }
             this.counter += 10;
             this.availToMove = false;
             this.lastRotated = false;

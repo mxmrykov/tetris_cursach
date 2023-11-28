@@ -4,7 +4,8 @@ public interface GameData {
             "L",
             "Z",
             "LINE",
-            "SHORT_T"
+            "SHORT_T",
+            "L_REV"
     };
     int[][][] allFigures = {
             {
@@ -26,7 +27,11 @@ public interface GameData {
             {
                     {0, 20, 20, 40, 40, 60, 60, 0},
                     {20, 20, 0, 0, 20, 20, 40, 40}
-            }
+            },
+            {
+                    {20, 40, 40, 0, 0, 20},
+                    {0, 0, 60, 60, 40, 40}
+            },
     };
 
 }
