@@ -19,10 +19,12 @@ public class GameZone extends JPanel implements GameData {
     private int InternalIndex = 0;
     private boolean availToMove = false;
     private int lastAdded = 0;
+    private int velocity = 1;
     private boolean lastRotated = false;
     public boolean mustPaint = true;
     private Font font;
     private int counter = 0;
+    private int topLevel = 420;
     private final int[] sizeY = new int[2];
     private final int[] sizeX = new int[2];
     private int lastFigureIndex = 0;
@@ -95,7 +97,7 @@ public class GameZone extends JPanel implements GameData {
         } else {
             removeLayers(g);
             traceCurrent(g);
-            lifeCycle(g);
+            lifeCycle();
         }
     }
 
@@ -107,7 +109,7 @@ public class GameZone extends JPanel implements GameData {
         if (this.fragment[lastAdded] != null) {
             int[] newCoordinatesY = new int[this.fragment[lastAdded].npoints];
             for (int i = 0; i < this.fragment[lastAdded].npoints; ++i) {
-                newCoordinatesY[i] = this.fragment[lastAdded].ypoints[i] + 1;
+                newCoordinatesY[i] = this.fragment[lastAdded].ypoints[i] + velocity;
             }
             if (!isIntersects(fragment[lastAdded].xpoints, newCoordinatesY)) {
                 this.fragment[lastAdded].ypoints = newCoordinatesY;
@@ -124,7 +126,7 @@ public class GameZone extends JPanel implements GameData {
             boolean[] isLineFilled = new boolean[19];
             for (int j = 0; j < 19; ++j) {
                 g.drawOval((j + 1) * 20 - 10, (i + 1) * 20 - 10, 2, 2);
-                for (int k = 0; k < lastAdded; ++k) {
+                if (lastAdded > 4) for (int k = 0; k < lastAdded; ++k) {
                     Polygon figyre = new Polygon(fragment[k].xpoints, fragment[k].ypoints, fragment[k].npoints);
                     if (figyre.contains((j + 1) * 20 - 10, (i + 1) * 20 - 10)) {
                         isLineFilled[j] = true;
@@ -132,17 +134,19 @@ public class GameZone extends JPanel implements GameData {
                 }
             }
             if (Arrays.equals(layersToMove, isLineFilled)) {
-                g.clearRect(2, i * 20 - 2, 378, 20);
-                g.setColor(Color.BLACK);
-                g.fillRect(0, i * 20, 380, 20);
-//                for (int k = 0; k < lastAdded; ++k) {
-//                    int[] newY = fragment[k].ypoints;
-//                    for (int j : newY) {
-//                    }
-//                    fragment[k].ypoints = newY;
-//                }
+                counter += 50;
+                for (int k = 0; k < lastAdded; ++k) {
+                    int[] newY = fragment[k].ypoints;
+                    for (int a = 0; a < fragment[k].npoints; ++a) {
+                        if (newY[a] <= i * 20) {
+                            newY[a] += 20;
+                        }
+                    }
+                    fragment[k].ypoints = newY;
+                }
             }
         }
+        System.out.print("\r" + topLevel);
     }
 
     public void rotate() {
@@ -353,6 +357,16 @@ public class GameZone extends JPanel implements GameData {
         }
     }
 
+    public void getTopPoint() {
+        for (int i = 0; i < lastAdded; ++i) {
+            for (int j = 0; j < fragment[i].npoints; ++j) {
+                if (fragment[i].ypoints[j] < topLevel) {
+                    topLevel = fragment[i].ypoints[j];
+                }
+            }
+        }
+    }
+
     public void generateActivePart(Graphics g) {
         this.coordinates = new int[2][GameData.allFigures[lastFigureIndex][0].length];
         this.coordinates = GameData.allFigures[lastFigureIndex];
@@ -442,7 +456,7 @@ public class GameZone extends JPanel implements GameData {
         return true;
     }
 
-    public void lifeCycle(Graphics g) {
+    public void lifeCycle() {
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
 
         if (this.sizeY[1] <= 418 && isAvailToMoveFragment()) {
@@ -453,7 +467,14 @@ public class GameZone extends JPanel implements GameData {
             this.availToMove = false;
             this.lastRotated = false;
             this.lastAdded += 1;
-
+            if (counter > 200 && counter < 400) {
+                velocity = 2;
+            } else if (counter > 400 && counter < 600) {
+                velocity = 3;
+            } else if (counter > 600) {
+                velocity = 4;
+            }
+            if (lastAdded > 4) getTopPoint();
             repaint();
         }
     }
