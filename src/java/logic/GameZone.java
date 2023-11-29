@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Random;
 
 public class GameZone extends JPanel implements GameData {
@@ -92,8 +93,9 @@ public class GameZone extends JPanel implements GameData {
         if (!availToMove) {
             generateActivePart(g);
         } else {
+            removeLayers(g);
             traceCurrent(g);
-            lifeCycle();
+            lifeCycle(g);
         }
     }
 
@@ -113,16 +115,46 @@ public class GameZone extends JPanel implements GameData {
         }
     }
 
-    public void rotate() {
-        try {
-            URL urlMove = new URL("https://dreamity.ru/internal/rotate.wav");
-            Clip moveClip = AudioSystem.getClip();
-            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-            moveClip.open(aisMove);
-            moveClip.loop(0);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+    private void removeLayers(Graphics g) {
+        boolean[] layersToMove = new boolean[19];
+        for (int i = 0; i < 19; ++i) {
+            layersToMove[i] = true;
         }
+        for (int i = 0; i < 21; ++i) {
+            boolean[] isLineFilled = new boolean[19];
+            for (int j = 0; j < 19; ++j) {
+                g.drawOval((j + 1) * 20 - 10, (i + 1) * 20 - 10, 2, 2);
+                for (int k = 0; k < lastAdded; ++k) {
+                    Polygon figyre = new Polygon(fragment[k].xpoints, fragment[k].ypoints, fragment[k].npoints);
+                    if (figyre.contains((j + 1) * 20 - 10, (i + 1) * 20 - 10)) {
+                        isLineFilled[j] = true;
+                    }
+                }
+            }
+            if (Arrays.equals(layersToMove, isLineFilled)) {
+                g.clearRect(2, i * 20 - 2, 378, 20);
+                g.setColor(Color.BLACK);
+                g.fillRect(0, i * 20, 380, 20);
+//                for (int k = 0; k < lastAdded; ++k) {
+//                    int[] newY = fragment[k].ypoints;
+//                    for (int j : newY) {
+//                    }
+//                    fragment[k].ypoints = newY;
+//                }
+            }
+        }
+    }
+
+    public void rotate() {
+//        try {
+//            URL urlMove = new URL("https://dreamity.ru/internal/rotate.wav");
+//            Clip moveClip = AudioSystem.getClip();
+//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//            moveClip.open(aisMove);
+//            moveClip.loop(0);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
         if (this.fragment[lastAdded] != null) {
             int[] xPoints = fragment[lastAdded].xpoints;
             int[] yPoints = fragment[lastAdded].ypoints;
@@ -275,15 +307,15 @@ public class GameZone extends JPanel implements GameData {
 
 
     public void moveLeft() {
-        try {
-            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
-            Clip moveClip = AudioSystem.getClip();
-            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-            moveClip.open(aisMove);
-            moveClip.loop(0);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
+//            Clip moveClip = AudioSystem.getClip();
+//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//            moveClip.open(aisMove);
+//            moveClip.loop(0);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[0] >= 20) {
             boolean can = true;
@@ -299,15 +331,15 @@ public class GameZone extends JPanel implements GameData {
     }
 
     public void moveRight() {
-        try {
-            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
-            Clip moveClip = AudioSystem.getClip();
-            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-            moveClip.open(aisMove);
-            moveClip.loop(0);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
+//            Clip moveClip = AudioSystem.getClip();
+//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//            moveClip.open(aisMove);
+//            moveClip.loop(0);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[1] <= 370) {
             int[] newCoordinatesX = new int[this.fragment[lastAdded].npoints];
@@ -341,25 +373,6 @@ public class GameZone extends JPanel implements GameData {
             repaint();
         }
     }
-
-    public boolean ifUnpaintedCells(int rectX, int rectY, int rectWidth, int rectHeight, Polygon[] polygons) {
-        for (int i = rectX; i < rectX + rectWidth; i++) {
-            for (int j = rectY; j < rectY + rectHeight; j++) {
-                boolean isFilled = false;
-                for (int in = 0; in < lastAdded; ++in) {
-                    if (fragment[i].contains(i, j)) {
-                        isFilled = true;
-                        break;
-                    }
-                }
-                if (!isFilled) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 
     public void traceCurrent(Graphics g) {
         g.drawPolygon(this.fragment[lastAdded]);
@@ -429,22 +442,18 @@ public class GameZone extends JPanel implements GameData {
         return true;
     }
 
-    public void lifeCycle() {
+    public void lifeCycle(Graphics g) {
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
 
         if (this.sizeY[1] <= 418 && isAvailToMoveFragment()) {
             this.timer.start();
             repaint();
         } else {
-//            if (lastAdded > 0) {
-//                System.out.println(ifUnpaintedCells(0, 380, 380, 20, fragment));
-//                System.out.println(ifUnpaintedCells(0, 400, 380, 20, fragment));
-//                System.out.println(ifUnpaintedCells(0, 420, 380, 20, fragment));
-//            }
             this.counter += 10;
             this.availToMove = false;
             this.lastRotated = false;
             this.lastAdded += 1;
+
             repaint();
         }
     }

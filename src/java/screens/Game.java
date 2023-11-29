@@ -19,6 +19,7 @@ public class Game extends JPanel {
     public final CardLayout cardLayout;
     private final Font font;
     private final JPanel panelContainer;
+
     public Game(CardLayout cardLayout, Font font, JPanel panelContainer) {
         this.cardLayout = cardLayout;
         this.font = font;
@@ -29,29 +30,27 @@ public class Game extends JPanel {
     public void restartGame() {
         gameZone.restart();
     }
+
     public int getScore() {
         return gameZone.getCount();
     }
+
     public void moveRight() {
-        try {
-            gameZone.moveRight();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        gameZone.moveRight();
     }
+
     public void moveLeft() {
-        try {
-            gameZone.moveLeft();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        gameZone.moveLeft();
     }
+
     public void moveDown() {
         gameZone.moveDown();
     }
+
     public void rotate() {
         gameZone.rotate();
     }
+
     public void pause() {
         gameZone.pause();
     }
@@ -59,6 +58,7 @@ public class Game extends JPanel {
     public void play() {
         gameZone.resume();
     }
+
     public JPanel setGameScreen() {
         JPanel gameScreen = generateGamePanel();
 
@@ -92,6 +92,7 @@ public class Game extends JPanel {
 
         return gameScreen;
     }
+
     private void animationForCount() {
         tm = new Timer(100, new ActionListener() {
             @Override
