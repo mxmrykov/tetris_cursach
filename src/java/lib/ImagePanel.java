@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class ImagePanel extends JPanel {
     private BufferedImage backgroundImage;
-    private final String finalPath = "/Users/maximkarykov/IdeaProjects/tetris_/src/java/lib/background.jpg";
+    private final String finalPath = "C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\background.jpg";
 
     public ImagePanel() {
         try {

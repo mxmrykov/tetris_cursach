@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Random;
@@ -19,7 +20,6 @@ public class GameZone extends JPanel implements GameData {
     private int InternalIndex = 0;
     private boolean availToMove = false;
     private int lastAdded = 0;
-    private int velocity = 1;
     private boolean lastRotated = false;
     public boolean mustPaint = true;
     private Font font;
@@ -64,6 +64,24 @@ public class GameZone extends JPanel implements GameData {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        if (lastAdded == 5) {
+            try {
+                File fontFile = new File("C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\LLPixel.ttf");
+                font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+                URL urlMove = new URL("https://dreamity.ru/internal/win.wav");
+                Clip moveClip = AudioSystem.getClip();
+                AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+                moveClip.open(aisMove);
+                moveClip.loop(0);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            g.setColor(Color.white);
+            g.setFont(font.deriveFont(Font.PLAIN, 24f));
+            g.drawString("You Win!", 110, 220);
+            gameOver = true;
+            return;
+        }
         if (this.lastAdded == 0 && !this.availToMove) {
             for (int i = 0; i < 200; ++i) {
                 fragment[i] = null;
@@ -79,7 +97,8 @@ public class GameZone extends JPanel implements GameData {
             else {
                 System.out.println("Game generateLeaders");
                 try {
-                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LLPixel.ttf"));
+                    File fontFile = new File("C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\LLPixel.ttf");
+                    font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -109,7 +128,7 @@ public class GameZone extends JPanel implements GameData {
         if (this.fragment[lastAdded] != null) {
             int[] newCoordinatesY = new int[this.fragment[lastAdded].npoints];
             for (int i = 0; i < this.fragment[lastAdded].npoints; ++i) {
-                newCoordinatesY[i] = this.fragment[lastAdded].ypoints[i] + velocity;
+                newCoordinatesY[i] = this.fragment[lastAdded].ypoints[i] + 1;
             }
             if (!isIntersects(fragment[lastAdded].xpoints, newCoordinatesY)) {
                 this.fragment[lastAdded].ypoints = newCoordinatesY;
@@ -135,10 +154,19 @@ public class GameZone extends JPanel implements GameData {
             }
             if (Arrays.equals(layersToMove, isLineFilled)) {
                 counter += 50;
+                try {
+                    URL urlMove = new URL("https://dreamity.ru/internal/stack.wav");
+                    Clip moveClip = AudioSystem.getClip();
+                    AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+                    moveClip.open(aisMove);
+                    moveClip.loop(0);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
                 for (int k = 0; k < lastAdded; ++k) {
                     int[] newY = fragment[k].ypoints;
                     for (int a = 0; a < fragment[k].npoints; ++a) {
-                        if (newY[a] <= i * 20) {
+                        if (newY[a] <= i * 20 - 1) {
                             newY[a] += 20;
                         }
                     }
@@ -146,19 +174,9 @@ public class GameZone extends JPanel implements GameData {
                 }
             }
         }
-        System.out.print("\r" + topLevel);
     }
 
     public void rotate() {
-//        try {
-//            URL urlMove = new URL("https://dreamity.ru/internal/rotate.wav");
-//            Clip moveClip = AudioSystem.getClip();
-//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-//            moveClip.open(aisMove);
-//            moveClip.loop(0);
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
         if (this.fragment[lastAdded] != null) {
             int[] xPoints = fragment[lastAdded].xpoints;
             int[] yPoints = fragment[lastAdded].ypoints;
@@ -311,15 +329,6 @@ public class GameZone extends JPanel implements GameData {
 
 
     public void moveLeft() {
-//        try {
-//            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
-//            Clip moveClip = AudioSystem.getClip();
-//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-//            moveClip.open(aisMove);
-//            moveClip.loop(0);
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[0] >= 20) {
             boolean can = true;
@@ -335,15 +344,6 @@ public class GameZone extends JPanel implements GameData {
     }
 
     public void moveRight() {
-//        try {
-//            URL urlMove = new URL("https://dreamity.ru/internal/29-bruh.wav");
-//            Clip moveClip = AudioSystem.getClip();
-//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
-//            moveClip.open(aisMove);
-//            moveClip.loop(0);
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[1] <= 370) {
             int[] newCoordinatesX = new int[this.fragment[lastAdded].npoints];
@@ -458,21 +458,21 @@ public class GameZone extends JPanel implements GameData {
 
     public void lifeCycle() {
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
-
-        if (this.sizeY[1] <= 418 && isAvailToMoveFragment()) {
+        if (this.sizeY[1] < 418 && isAvailToMoveFragment()) {
             this.timer.start();
             repaint();
         } else {
+            this.timer.stop();
             this.counter += 10;
             this.availToMove = false;
             this.lastRotated = false;
             this.lastAdded += 1;
             if (counter > 200 && counter < 400) {
-                velocity = 2;
+                timer.setDelay(10);
             } else if (counter > 400 && counter < 600) {
-                velocity = 3;
+                timer.setDelay(3);
             } else if (counter > 600) {
-                velocity = 4;
+                timer.setDelay(1);
             }
             if (lastAdded > 4) getTopPoint();
             repaint();

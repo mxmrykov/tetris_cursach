@@ -73,7 +73,7 @@ public class Home extends JPanel {
     }
 
     private JLabel generateTetrisTitle() {
-        JLabel mainTitle = new JLabel("Tetris");
+        JLabel mainTitle = new JLabel("Sigma Tetris");
         mainTitle.setBounds(0, 0, 150, 50);
         mainTitle.setFont(font.deriveFont(Font.BOLD, 48f));
         mainTitle.setForeground(Color.WHITE);

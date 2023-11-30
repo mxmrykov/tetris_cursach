@@ -1,9 +1,13 @@
 package screens;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 public class Screens extends JFrame {
 
@@ -46,11 +50,21 @@ public class Screens extends JFrame {
         panelContainer.add(game, "Game");
         add(panelContainer);
 
+
         setFocusable(true);
         requestFocusInWindow();
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                try {
+                    URL urlMove = new URL("https://dreamity.ru/internal/move.wav");
+                    Clip moveClip = AudioSystem.getClip();
+                    AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+                    moveClip.open(aisMove);
+                    moveClip.start();
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     game.moveLeft();
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
