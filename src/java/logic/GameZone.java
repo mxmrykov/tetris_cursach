@@ -64,7 +64,7 @@ public class GameZone extends JPanel implements GameData {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (lastAdded == 5) {
+        if (lastAdded == 199) {
             try {
                 File fontFile = new File("C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\LLPixel.ttf");
                 font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
@@ -78,7 +78,7 @@ public class GameZone extends JPanel implements GameData {
             }
             g.setColor(Color.white);
             g.setFont(font.deriveFont(Font.PLAIN, 24f));
-            g.drawString("You Win!", 110, 220);
+            g.drawString("You Win!", 140, 220);
             gameOver = true;
             return;
         }
