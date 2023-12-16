@@ -50,6 +50,7 @@ public class GameZone extends JPanel implements GameData {
         mustPaint = true;
         counter = 0;
         lastFigureIndex = 0;
+        timer.setDelay(20);
         repaint();
     }
 
@@ -64,9 +65,9 @@ public class GameZone extends JPanel implements GameData {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (lastAdded == 5) {
+        if (lastAdded == 199) {
             try {
-                File fontFile = new File("C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\LLPixel.ttf");
+                File fontFile = new File("/Users/maximkarykov/IdeaProjects/tetris_/src/java/lib/LLPixel.ttf");
                 font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
                 URL urlMove = new URL("https://dreamity.ru/internal/win.wav");
                 Clip moveClip = AudioSystem.getClip();
@@ -97,7 +98,7 @@ public class GameZone extends JPanel implements GameData {
             else {
                 System.out.println("Game generateLeaders");
                 try {
-                    File fontFile = new File("C:\\Users\\rykov\\IdeaProjects\\tetris_cursach\\src\\java\\lib\\LLPixel.ttf");
+                    File fontFile = new File("/Users/maximkarykov/IdeaProjects/tetris_/src/java/lib/LLPixel.ttf");
                     font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -179,6 +180,15 @@ public class GameZone extends JPanel implements GameData {
     public void rotate() {
         if (this.fragment[lastAdded] != null) {
             int[] xPoints = fragment[lastAdded].xpoints;
+//            try {
+//                URL urlMove = new URL("https://dreamity.ru/internal/move.wav");
+//                Clip moveClip = AudioSystem.getClip();
+//                AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//                moveClip.open(aisMove);
+//                moveClip.start();
+//            } catch (Exception ex) {
+//                System.out.println(ex.getMessage());
+//            }
             int[] yPoints = fragment[lastAdded].ypoints;
             if (GameData.TYPE[InternalIndex].equals("L")) {
                 if (!lastRotated) {
@@ -329,6 +339,15 @@ public class GameZone extends JPanel implements GameData {
 
 
     public void moveLeft() {
+//        try {
+//            URL urlMove = new URL("https://dreamity.ru/internal/move.wav");
+//            Clip moveClip = AudioSystem.getClip();
+//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//            moveClip.open(aisMove);
+//            moveClip.start();
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[0] >= 20) {
             boolean can = true;
@@ -344,6 +363,15 @@ public class GameZone extends JPanel implements GameData {
     }
 
     public void moveRight() {
+//        try {
+//            URL urlMove = new URL("https://dreamity.ru/internal/move.wav");
+//            Clip moveClip = AudioSystem.getClip();
+//            AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+//            moveClip.open(aisMove);
+//            moveClip.start();
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
         calculateMinimum(this.fragment[lastAdded].xpoints, this.fragment[lastAdded].ypoints);
         if (sizeX[1] <= 370) {
             int[] newCoordinatesX = new int[this.fragment[lastAdded].npoints];
@@ -470,9 +498,9 @@ public class GameZone extends JPanel implements GameData {
             if (counter > 200 && counter < 400) {
                 timer.setDelay(10);
             } else if (counter > 400 && counter < 600) {
-                timer.setDelay(3);
+                timer.setDelay(7);
             } else if (counter > 600) {
-                timer.setDelay(1);
+                timer.setDelay(4);
             }
             if (lastAdded > 4) getTopPoint();
             repaint();
