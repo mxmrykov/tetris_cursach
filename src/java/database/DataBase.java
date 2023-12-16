@@ -121,7 +121,7 @@ public class DataBase {
                 return true;
             } else {
                 System.out.println("Data not inserted");
-                return true;
+                return false;
             }
         } catch (SQLException e) {
             System.out.println(score + " " + UID + " " + currentdate);

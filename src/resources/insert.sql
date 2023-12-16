@@ -1,0 +1,1 @@
+INSERT INTO scores (UID, score, date) VALUES (?, ?, ?)

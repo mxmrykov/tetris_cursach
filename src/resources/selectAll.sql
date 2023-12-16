@@ -1,0 +1,1 @@
+SELECT * FROM scores ORDER BY score DESC

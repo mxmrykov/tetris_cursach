@@ -1,0 +1,1 @@
+SELECT * FROM scoers WHERE UID = ? ORDER BY score DESC

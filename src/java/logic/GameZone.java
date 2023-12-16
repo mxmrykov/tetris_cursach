@@ -79,7 +79,7 @@ public class GameZone extends JPanel implements GameData {
             }
             g.setColor(Color.white);
             g.setFont(font.deriveFont(Font.PLAIN, 24f));
-            g.drawString("You Win!", 110, 220);
+            g.drawString("You Win!", 140, 220);
             gameOver = true;
             return;
         }
