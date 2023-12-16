@@ -1,7 +1,5 @@
 package screens;
 
-import jaco.mp3.player.MP3Player;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -9,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.net.URL;
 
 public class Screens extends JFrame {
@@ -53,21 +50,29 @@ public class Screens extends JFrame {
         panelContainer.add(game, "Game");
         add(panelContainer);
 
-        MP3Player mp3Player = new MP3Player(new File("src/java/lib/move.mp3"));
-
 
         setFocusable(true);
         requestFocusInWindow();
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                mp3Player.play();
+                try {
+                    URL urlMove = new URL("https://dreamity.ru/internal/move.wav");
+                    Clip moveClip = AudioSystem.getClip();
+                    AudioInputStream aisMove = AudioSystem.getAudioInputStream(urlMove);
+                    moveClip.open(aisMove);
+                    moveClip.start();
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     game.moveLeft();
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     game.moveRight();
                 } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     game.rotate();
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    game.moveDown();
                 }
             }
         });
